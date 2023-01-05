@@ -18,13 +18,11 @@ import { LoadingButton } from "@mui/lab";
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  email: yup.string(),
-  // .email("You must enter a valid email")
-  // .required("You must enter a email"),
-  password: yup
+  email: yup
     .string()
-    .required("Please enter your password.")
-    .min(4, "Password is too short - must be at least 4 chars."),
+    .email("You must enter a valid email")
+    .required("You must enter a email"),
+  password: yup.string().required("Please enter your password."),
 });
 
 const defaultValues = {
@@ -61,57 +59,12 @@ function SignInPage() {
     setIsLoading(true);
     jwtService
       .signInWithEmailAndPassword(email, password)
-      .then((user) => {
+      .then((response) => {
         setIsLoading(false);
-        if ("code" in response && response.code === "ERR_NETWORK") {
-          dispatch(showMessage({ message: message, variant: "error" }));
-        } else if ("code" in response && response.code === "ERR_BAD_REQUEST") {
-          dispatch(
-            showMessage({
-              message: response.response.data.detail,
-              variant: "error",
-            })
-          );
-        } else if (response?.status === 500) {
-          dispatch(
-            showMessage({
-              message: response.statusText,
-              variant: "error",
-            })
-          );
-        } else if (response?.password_reset_required) {
-          dispatch(
-            showMessage({
-              message: "You need to change your password to proceed",
-              variant: "success",
-            })
-          );
-          navigate("/change-password");
-        } else if (response?.status === 200) {
-          setLoginDetails({
-            username: response.data.username,
-            password: response.data.password,
-          });
-          dispatch(
-            showMessage({
-              message:
-                Object.keys(loginDetails).length === 0
-                  ? "An opt code was sent to your email"
-                  : response.data.detail,
-              variant:
-                Object.keys(loginDetails).length === 0 ? "success" : "error",
-            })
-          );
-        }
         // No need to do anything, user data will be set at app/auth/AuthContext
       })
-      .catch((_errors) => {
-        _errors.forEach((error) => {
-          setError(error.type, {
-            type: "manual",
-            message: error.message,
-          });
-        });
+      .catch((error) => {
+        console.error(error);
       });
   }
 

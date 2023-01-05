@@ -7,10 +7,12 @@ import SignUpConfig from "../main/sign-up/SignUpConfig";
 import SignOutConfig from "../main/sign-out/SignOutConfig";
 import Error404Page from "../main/404/Error404Page";
 import CategoriesConfig from "../main/categories/CategoriesConfig";
+import ProductsConfig from "../main/products/ProductsConfig";
 import ForgotPasswordConfig from "../main/forgot-password/ForgotPasswordConfig";
 
 const routeConfigs = [
   CategoriesConfig,
+  ProductsConfig,
   SignOutConfig,
   SignInConfig,
   SignUpConfig,
@@ -24,7 +26,7 @@ const routes = [
   ),
   {
     path: "/",
-    element: <Navigate to="/categories" />,
+    element: <Navigate to="/products" />,
     auth: settingsConfig.defaultAuth,
   },
   {

@@ -62,17 +62,17 @@ const CategoriesList = () => {
                 <td className="px-24 py-20 flex gap-10">
                   <FuseSvgIcon
                     size={20}
-                    onClick={() => setOpen({ isOpen: true, id: category.id })}
-                    className="hover:text-red cursor-pointer"
-                  >
-                    heroicons-solid:trash
-                  </FuseSvgIcon>
-                  <FuseSvgIcon
-                    size={20}
                     onClick={() => dispatch(setCategory(category))}
                     className="hover:text-blue cursor-pointer"
                   >
                     heroicons-solid:pencil-alt
+                  </FuseSvgIcon>
+                  <FuseSvgIcon
+                    size={20}
+                    onClick={() => setOpen({ isOpen: true, id: category.id })}
+                    className="hover:text-red cursor-pointer"
+                  >
+                    heroicons-solid:trash
                   </FuseSvgIcon>
                 </td>
               </tr>

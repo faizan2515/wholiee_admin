@@ -3,20 +3,30 @@ import { Button, Typography } from "@mui/material";
 import withReducer from "app/store/withReducer";
 import reducer from "./store";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories, selectCategories } from "./store/categoriesSlice";
+import {
+  getProducts,
+  getUserProducts,
+  selectProducts,
+} from "./store/productsSlice";
 import { useEffect, useState } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import CategoriesList from "./components/CategoriesList";
-import CategoryDialog from "./components/CategoryDialog";
+import ProductsList from "./components/ProductsList";
+import ProductDialog from "./components/ProductDialog";
+import { selectUser } from "app/store/userSlice";
 
-const Categories = () => {
+const Products = () => {
   const dispatch = useDispatch();
-  const { isLoading } = useSelector(selectCategories);
+  const user = useSelector(selectUser);
+  const { isLoading } = useSelector(selectProducts);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategories());
+    if (user.role === "admin") {
+      dispatch(getProducts());
+    } else if (user.role === "wholeseller") {
+      dispatch(getUserProducts(user.data.id));
+    }
   }, [dispatch]);
 
   if (isLoading) {
@@ -29,7 +39,7 @@ const Categories = () => {
         <div className="flex flex-auto items-center min-w-0">
           <div className="flex flex-col flex-auto">
             <Typography className="text-3xl font-semibold tracking-tight leading-8">
-              Categories
+              Products
             </Typography>
           </div>
           <div className="flex items-center sm:mt-0 sm:mx-8 space-x-12">
@@ -46,11 +56,11 @@ const Categories = () => {
             </Button>
           </div>
         </div>
-        <CategoriesList />
+        <ProductsList />
       </div>
-      <CategoryDialog open={open} setOpen={setOpen} />
+      <ProductDialog open={open} setOpen={setOpen} />
     </>
   );
 };
 
-export default withReducer("categories", reducer)(Categories);
+export default withReducer("products", reducer)(Products);

@@ -54,14 +54,10 @@ class JwtService extends FuseUtils.EventEmitter {
   createUser = (data) => {
     return new Promise((resolve, reject) => {
       axios
-        .post(jwtServiceConfig.signUp, { ...data, role: "admin" })
+        .post(jwtServiceConfig.signUp, { ...data, role: "wholeseller" })
         .then((response) => {
           if (response.data.success) {
-            this.signInWithEmailAndPassword(data.email, data.password).then(
-              (response) => {
-                // No need to do anything, user data will be set at app/auth/AuthContext
-              }
-            );
+            this.signInWithEmailAndPassword(data.email, data.password);
           } else {
             reject(response.data.error);
           }
