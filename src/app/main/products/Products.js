@@ -35,7 +35,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="w-full container p-24 md:p-32 pb-0 md:pb-0">
+      <div className="w-full container p-24 md:p-32">
         <div className="flex flex-auto items-center min-w-0">
           <div className="flex flex-col flex-auto">
             <Typography className="text-3xl font-semibold tracking-tight leading-8">
