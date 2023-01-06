@@ -1,5 +1,4 @@
 import FuseUtils from "@fuse/utils";
-import FuseLoading from "@fuse/core/FuseLoading";
 import { Navigate } from "react-router-dom";
 import settingsConfig from "app/configs/settingsConfig";
 import SignInConfig from "../main/sign-in/SignInConfig";
@@ -8,11 +7,13 @@ import SignOutConfig from "../main/sign-out/SignOutConfig";
 import Error404Page from "../main/404/Error404Page";
 import CategoriesConfig from "../main/categories/CategoriesConfig";
 import ProductsConfig from "../main/products/ProductsConfig";
+import UsersConfig from "../main/users/UsersConfig";
 import ForgotPasswordConfig from "../main/forgot-password/ForgotPasswordConfig";
 
 const routeConfigs = [
   CategoriesConfig,
   ProductsConfig,
+  UsersConfig,
   SignOutConfig,
   SignInConfig,
   SignUpConfig,
@@ -30,16 +31,9 @@ const routes = [
     auth: settingsConfig.defaultAuth,
   },
   {
-    path: "loading",
-    element: <FuseLoading />,
-  },
-  {
-    path: "404",
-    element: <Error404Page />,
-  },
-  {
     path: "*",
-    element: <Navigate to="404" />,
+    element: <Error404Page />,
+    auth: settingsConfig.defaultAuth,
   },
 ];
 

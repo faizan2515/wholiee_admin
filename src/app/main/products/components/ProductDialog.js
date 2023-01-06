@@ -90,8 +90,6 @@ const ProductDialog = ({ open, setOpen }) => {
       setCategories(response.payload.data.data);
     });
     if (product) {
-      console.log(product);
-
       const category = categories.find(
         (category) => category.category === product.Product_Category
       );

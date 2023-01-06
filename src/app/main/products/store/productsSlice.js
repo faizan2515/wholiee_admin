@@ -81,7 +81,6 @@ const productsSlice = createSlice({
     },
     [getProducts.fulfilled]: (state, action) => {
       if (action.payload.status === 200) {
-        console.log(action.payload.data);
         state.products = action.payload.data.data;
       }
       state.isLoading = false;

@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 const Products = lazy(() => import("./Products"));
 
-const ProdcutsConfig = {
+const ProductsConfig = {
   settings: {
     layout: {
       config: {},
@@ -16,4 +16,4 @@ const ProdcutsConfig = {
   ],
 };
 
-export default ProdcutsConfig;
+export default ProductsConfig;

@@ -67,7 +67,6 @@ function ResetPasswordPage() {
 
   function onSubmit(data) {
     setIsLoading(true);
-    console.log(data);
     dispatch(resetPassword(data)).then((response) => {
       setIsLoading(false);
       if (response.payload.status === 200) {
