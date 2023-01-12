@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import _ from "@lodash";
 import AvatarGroup from "@mui/material/AvatarGroup";
@@ -12,6 +12,8 @@ import Paper from "@mui/material/Paper";
 import jwtService from "../../auth/services/jwtService";
 import { LoadingButton } from "@mui/lab";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showMessage } from "app/store/fuse/messageSlice";
 
 /**
  * Form Validation Schema
@@ -42,6 +44,8 @@ const defaultValues = {
 };
 
 function SignUpPage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const { control, formState, handleSubmit, reset } = useForm({
@@ -55,23 +59,22 @@ function SignUpPage() {
   function onSubmit({ name, email, password, c_password }) {
     setIsLoading(true);
     jwtService
-      .createUser({
-        name,
-        email,
-        password,
-        c_password,
-      })
-      .then((user) => {
+      .createUser(name, email, password, c_password)
+      .then((response) => {
         setIsLoading(false);
+        if (response.status === 200) {
+          navigate("/sign-in");
+          dispatch(
+            showMessage({
+              message: "Wait for admin to approve your account",
+              variant: "success",
+            })
+          );
+        }
         // No need to do anything, registered user data will be set at app/auth/AuthContext
       })
-      .catch((_errors) => {
-        _errors.forEach((error) => {
-          setError(error.type, {
-            type: "manual",
-            message: error.message,
-          });
-        });
+      .catch((error) => {
+        console.error(error);
       });
   }
 

@@ -1,5 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers, selectUsers, setUser } from "../store/usersSlice";
+import {
+  deleteUser,
+  getUsers,
+  selectUsers,
+  setUser,
+} from "../store/usersSlice";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useState } from "react";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -14,19 +19,19 @@ const ProductsList = () => {
   const { users } = useSelector(selectUsers);
   const { role } = useSelector(selectUser);
 
-  // const handleDelete = (id) => {
-  //   dispatch(deleteProduct(id)).then(() => {
-  //     dispatch(getProducts());
-  //   });
-  // };
+  const handleDelete = (id) => {
+    dispatch(deleteUser(id)).then(() => {
+      dispatch(getUsers());
+    });
+  };
 
   return (
     <>
-      {/* <ConfirmationDialog
+      <ConfirmationDialog
         open={open}
         setOpen={setOpen}
         handleDelete={handleDelete}
-      /> */}
+      />
       <div className="relative overflow-x-auto shadow-md rounded-lg mt-32">
         <table className="w-full text-lg text-left text-gray-900">
           <thead className="uppercase bg-gray-50">
@@ -39,6 +44,9 @@ const ProductsList = () => {
               </th>
               <th scope="col" className="px-24 py-16">
                 role
+              </th>
+              <th scope="col" className="px-24 py-16">
+                status
               </th>
 
               {role === "admin" && (
@@ -53,7 +61,24 @@ const ProductsList = () => {
               <tr className="bg-white border-b" key={user.id}>
                 <td className="px-24 py-20">{user.email}</td>
                 <td className="px-24 py-20">{user.name}</td>
-                <td className="px-24 py-20">{user.role}</td>
+                <td className="px-24 py-20 uppercase">{user.role}</td>
+                <td className="px-24 py-20">
+                  {user.status === "Pending" ? (
+                    <p className="bg-yellow-900 text-white text-center rounded-full p-4">
+                      Pending
+                    </p>
+                  ) : user.status === "Approved" ? (
+                    <p className="bg-green-900 text-white text-center rounded-full p-4">
+                      Approved
+                    </p>
+                  ) : user.status === "Rejected" ? (
+                    <p className="bg-red-900 text-white text-center rounded-full p-4">
+                      Rejected
+                    </p>
+                  ) : (
+                    user.status
+                  )}
+                </td>
 
                 {role === "admin" && (
                   <td className="px-24 py-20 flex gap-10">
@@ -64,13 +89,13 @@ const ProductsList = () => {
                     >
                       heroicons-solid:pencil-alt
                     </FuseSvgIcon>
-                    {/* <FuseSvgIcon
+                    <FuseSvgIcon
                       size={20}
-                      onClick={() => setOpen({ isOpen: true, id: product.id })}
+                      onClick={() => setOpen({ isOpen: true, id: user.id })}
                       className="hover:text-red cursor-pointer"
                     >
                       heroicons-solid:trash
-                    </FuseSvgIcon> */}
+                    </FuseSvgIcon>
                   </td>
                 )}
               </tr>

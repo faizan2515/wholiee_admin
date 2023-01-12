@@ -13,12 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  getUsers,
-  selectUsers,
-  setUser,
-  updateUser,
-} from "../store/usersSlice";
+import { addUser, getUsers, selectUsers, setUser } from "../store/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
 import { useEffect } from "react";
@@ -27,25 +22,35 @@ import { useEffect } from "react";
  * Form Validation Schema
  */
 const schema = yup.object().shape({
+  name: yup
+    .string()
+    .min(4, "The name must be at least 4 characters")
+    .required("You must enter display name"),
   email: yup
     .string()
-    .email("Enter a valid email")
-    .required("You must enter an email"),
-  name: yup.string().required("You must enter a name"),
+    .email("You must enter a valid email")
+    .required("You must enter a email"),
   role: yup.string().required("You must select a role"),
-  status: yup.string().required("You must select a role"),
+  password: yup
+    .string()
+    .min(8, "The password must be at least 8 characters")
+    .required("Please enter your password."),
+  c_password: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
 const defaultValues = {
-  email: "",
   name: "",
+  email: "",
   role: "wholeseller",
-  status: "Pending",
+  password: "",
+  c_password: "",
 };
 
-const UserDialog = ({ open, setOpen }) => {
+const RegisterUser = ({ open, setOpen }) => {
   const dispatch = useDispatch();
-  const { isLoading, user } = useSelector(selectUsers);
+  const { isLoading } = useSelector(selectUsers);
   const { control, formState, handleSubmit, reset } = useForm({
     mode: "onChange",
     defaultValues,
@@ -54,33 +59,15 @@ const UserDialog = ({ open, setOpen }) => {
 
   const { isValid, dirtyFields, errors } = formState;
 
-  useEffect(() => {
-    if (user) {
-      reset({
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        status: user.status,
-      });
-      setOpen(true);
-    }
-  }, [user]);
-
   const onSubmit = (data) => {
-    if (user) {
-      data.id = user.id;
-      dispatch(updateUser(data)).then(() => {
-        handleClose();
-        dispatch(getUsers());
-      });
-    }
+    dispatch(addUser(data)).then(() => {
+      handleClose();
+      dispatch(getUsers());
+    });
   };
 
   const handleClose = () => {
     setOpen(false);
-    if (user) {
-      dispatch(setUser(null));
-    }
     reset(defaultValues);
   };
 
@@ -88,7 +75,7 @@ const UserDialog = ({ open, setOpen }) => {
     <Dialog open={open}>
       <Paper className="p-24 w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
         <Typography className="text-4xl font-extrabold tracking-tight leading-tight">
-          Edit User
+          Add User
         </Typography>
 
         <form
@@ -96,23 +83,6 @@ const UserDialog = ({ open, setOpen }) => {
           className="flex flex-col justify-center w-full mt-32"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                className="mb-24"
-                label="Email"
-                type="emai"
-                error={!!errors.email}
-                helperText={errors?.email?.message}
-                variant="outlined"
-                required
-                fullWidth
-              />
-            )}
-          />
           <Controller
             name="name"
             control={control}
@@ -124,6 +94,23 @@ const UserDialog = ({ open, setOpen }) => {
                 type="text"
                 error={!!errors.name}
                 helperText={errors?.name?.message}
+                variant="outlined"
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="mb-24"
+                label="Email"
+                type="emai"
+                error={!!errors.email}
+                helperText={errors?.email?.message}
                 variant="outlined"
                 required
                 fullWidth
@@ -144,17 +131,37 @@ const UserDialog = ({ open, setOpen }) => {
             )}
           />
           <Controller
-            name="status"
+            name="password"
             control={control}
             render={({ field }) => (
-              <FormControl fullWidth className="mb-24">
-                <InputLabel>Status</InputLabel>
-                <Select {...field} label="Status">
-                  <MenuItem value="Pending">Pending</MenuItem>
-                  <MenuItem value="Approved">Approved</MenuItem>
-                  <MenuItem value="Rejected">Rejected</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                {...field}
+                className="mb-24"
+                label="Password"
+                type="password"
+                error={!!errors.password}
+                helperText={errors?.password?.message}
+                variant="outlined"
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="c_password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="mb-24"
+                label="Password (Confirm)"
+                type="password"
+                error={!!errors.c_password}
+                helperText={errors?.c_password?.message}
+                variant="outlined"
+                required
+                fullWidth
+              />
             )}
           />
           <div className="flex justify-end gap-10">
@@ -175,4 +182,4 @@ const UserDialog = ({ open, setOpen }) => {
   );
 };
 
-export default UserDialog;
+export default RegisterUser;

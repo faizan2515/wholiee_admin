@@ -6,12 +6,23 @@ export const getUsers = createAsyncThunk("users/getUsers", async () => {
   return response;
 });
 
+export const addUser = createAsyncThunk("users/addUser", async (data) => {
+  const response = await axios.post("api/register", { ...data });
+  return response;
+});
+
 export const updateUser = createAsyncThunk("users/updateUser", async (data) => {
   const response = await axios.post(`api/${data.id}/update-user`, {
     email: data.email,
     name: data.name,
     role: data.role,
+    status: data.status,
   });
+  return response;
+});
+
+export const deleteUser = createAsyncThunk("users/deleteUser", async (id) => {
+  const response = await axios.post(`api/delete-user/${id}`);
   return response;
 });
 
