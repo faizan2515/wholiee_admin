@@ -5,9 +5,6 @@ import Typography from "@mui/material/Typography";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import _ from "@lodash";
-import AvatarGroup from "@mui/material/AvatarGroup";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import jwtService from "../../auth/services/jwtService";
 import { LoadingButton } from "@mui/lab";
@@ -48,13 +45,13 @@ function SignUpPage() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { control, formState, handleSubmit, reset } = useForm({
+  const { control, formState, handleSubmit } = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors, setError } = formState;
+  const { isValid, dirtyFields, errors } = formState;
 
   function onSubmit({ name, email, password, c_password }) {
     setIsLoading(true);

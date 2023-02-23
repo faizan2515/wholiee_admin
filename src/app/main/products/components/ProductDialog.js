@@ -7,6 +7,7 @@ import {
   Button,
   Dialog,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -37,27 +38,6 @@ import { selectUser } from "app/store/userSlice";
 
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
-const schema = yup.object().shape({
-  Product_name: yup.string().required("You must enter a name"),
-  Product_Category: yup.string().required("You must select a category"),
-  Product_Description: yup.string().required("You must enter a description"),
-  Product_Per_Price: yup
-    .number()
-    .min(0, "Enter positive number")
-    .required("You must enter a price"),
-  Product_Available_Qty: yup
-    .number()
-    .min(0, "Enter positive number")
-    .required("You must enter a quantity"),
-  Product_Image: yup
-    .mixed()
-    .test("fileType", "Supported formats are png, jpg & jpeg", (value) => {
-      if (!value || typeof value === "string") return true;
-      return value && SUPPORTED_FORMATS.includes(value.type);
-    }),
-  Product_status: yup.string(),
-});
-
 const defaultValues = {
   Product_name: "",
   Product_Category: "",
@@ -75,7 +55,38 @@ const ProductDialog = ({ open, setOpen }) => {
   const [image, setImage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { isLoading, product } = useSelector(selectProducts);
-  const { control, formState, handleSubmit, reset, watch, setError } = useForm({
+
+  const schema = yup.object().shape({
+    Product_name: yup.string().required("You must enter a name"),
+    Product_Category: yup.string().required("You must select a category"),
+    Product_Description: yup.string().required("You must enter a description"),
+    Product_Per_Price: yup
+      .number()
+      .min(0, "Enter positive number")
+      .required("You must enter a price"),
+    Product_Available_Qty: yup
+      .number()
+      .min(selectedCategory ? selectedCategory.category_min_quantity : 0)
+      .max(selectedCategory ? selectedCategory.category_max_quantity : 0)
+      .required("You must enter a quantity"),
+    Product_Image: yup
+      .mixed()
+      .test("fileType", "Supported formats are png, jpg & jpeg", (value) => {
+        if (!value || typeof value === "string") return true;
+        return value && SUPPORTED_FORMATS.includes(value.type);
+      }),
+    Product_status: yup.string(),
+  });
+
+  const {
+    control,
+    formState,
+    handleSubmit,
+    reset,
+    watch,
+    setError,
+    clearErrors,
+  } = useForm({
     mode: "onChange",
     defaultValues,
     resolver: yupResolver(schema),
@@ -117,8 +128,10 @@ const ProductDialog = ({ open, setOpen }) => {
       setError("Product_Available_Qty", {
         type: "custom",
       });
+    } else {
+      clearErrors("Product_Available_Qty");
     }
-  }, [quantity]);
+  }, [selectedCategory]);
 
   const onSubmit = (data) => {
     data.Product_Per_Price = data.Product_Per_Price.toString();
@@ -129,7 +142,11 @@ const ProductDialog = ({ open, setOpen }) => {
       delete data.Product_Image;
       dispatch(updateProduct(data)).then(() => {
         handleClose();
-        dispatch(getProducts());
+        if (user.role === "admin") {
+          dispatch(getProducts());
+        } else if (user.role === "wholeseller") {
+          dispatch(getUserProducts(user.data.id));
+        }
       });
     } else {
       dispatch(addProduct(data)).then(() => {
@@ -165,93 +182,101 @@ const ProductDialog = ({ open, setOpen }) => {
           className="flex flex-col justify-center w-full mt-32"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Controller
-            control={control}
-            name="Product_Image"
-            render={({ field: { onChange, value } }) => (
-              <Box
-                sx={{
-                  borderWidth: 4,
-                  borderStyle: "solid",
-                  borderColor: "background.paper",
-                }}
-                className="relative flex items-center justify-center w-128 h-128 border-0 rounded-sm overflow-hidden mb-24"
-              >
-                <div className="absolute inset-0 bg-black bg-opacity-50 z-10" />
-                <div className="absolute inset-0 flex items-center justify-center z-20">
-                  <div>
-                    {!value && (
-                      <label
-                        htmlFor="new-avatar"
-                        className="flex p-8 cursor-pointer"
-                      >
-                        <input
-                          accept="image/*"
-                          className="hidden"
-                          id="new-avatar"
-                          type="file"
-                          onChange={async (e) => {
-                            function readFileAsync() {
-                              return new Promise((resolve, reject) => {
-                                const file = e.target.files[0];
-                                if (!file) {
-                                  return;
-                                }
-                                onChange(file);
-                                const reader = new FileReader();
-
-                                reader.onload = () => {
-                                  resolve(
-                                    `data:${file.type};base64,${btoa(
-                                      reader.result
-                                    )}`
-                                  );
-                                };
-
-                                reader.onerror = reject;
-
-                                reader.readAsBinaryString(file);
-                              });
-                            }
-
-                            const newImage = await readFileAsync();
-
-                            setImage(newImage);
-                          }}
-                        />
-                        <FuseSvgIcon className="text-white" size={24}>
-                          heroicons-outline:camera
-                        </FuseSvgIcon>
-                      </label>
-                    )}
-                  </div>
-                  <div>
-                    {value && (
-                      <IconButton
-                        onClick={() => {
-                          setImage("");
-                          onChange(null);
-                        }}
-                      >
-                        <FuseSvgIcon className="text-white" size={24}>
-                          heroicons-solid:trash
-                        </FuseSvgIcon>
-                      </IconButton>
-                    )}
-                  </div>
-                </div>
-                <Avatar
+          <div className="flex flex-auto items-center gap-10">
+            <Controller
+              control={control}
+              name="Product_Image"
+              render={({ field: { onChange, value } }) => (
+                <Box
                   sx={{
-                    backgroundColor: "background.default",
-                    color: "text.secondary",
+                    borderWidth: 4,
+                    borderStyle: "solid",
+                    borderColor: "background.paper",
                   }}
-                  className="object-cover w-full h-full text-64 font-bold"
-                  src={image}
-                  alt="Profile Picture"
-                />
-              </Box>
+                  className="relative flex items-center justify-center min-w-128 min-h-128 w-128 h-128 border-0 rounded-sm overflow-hidden mb-24"
+                >
+                  <div className="absolute inset-0 bg-black bg-opacity-50 z-10" />
+                  <div className="absolute inset-0 flex items-center justify-center z-20">
+                    <div>
+                      {!value && (
+                        <label
+                          htmlFor="new-avatar"
+                          className="flex p-8 cursor-pointer"
+                        >
+                          <input
+                            accept="image/*"
+                            className="hidden"
+                            id="new-avatar"
+                            type="file"
+                            onChange={async (e) => {
+                              function readFileAsync() {
+                                return new Promise((resolve, reject) => {
+                                  const file = e.target.files[0];
+                                  if (!file) {
+                                    return;
+                                  }
+                                  onChange(file);
+                                  const reader = new FileReader();
+
+                                  reader.onload = () => {
+                                    resolve(
+                                      `data:${file.type};base64,${btoa(
+                                        reader.result
+                                      )}`
+                                    );
+                                  };
+
+                                  reader.onerror = reject;
+
+                                  reader.readAsBinaryString(file);
+                                });
+                              }
+
+                              const newImage = await readFileAsync();
+
+                              setImage(newImage);
+                            }}
+                          />
+                          <FuseSvgIcon className="text-white" size={24}>
+                            heroicons-outline:camera
+                          </FuseSvgIcon>
+                        </label>
+                      )}
+                    </div>
+                    <div>
+                      {value && (
+                        <IconButton
+                          onClick={() => {
+                            setImage("");
+                            onChange(null);
+                          }}
+                        >
+                          <FuseSvgIcon className="text-white" size={24}>
+                            heroicons-solid:trash
+                          </FuseSvgIcon>
+                        </IconButton>
+                      )}
+                    </div>
+                  </div>
+                  <Avatar
+                    sx={{
+                      backgroundColor: "background.default",
+                      color: "text.secondary",
+                    }}
+                    className="object-cover w-full h-full text-64 font-bold"
+                    src={image}
+                    alt="Profile Picture"
+                  />
+                </Box>
+              )}
+            />
+            {errors.Product_Image && (
+              <FormHelperText className="text-[12px] text-[#f44336]">
+                {errors.Product_Image.message}
+              </FormHelperText>
             )}
-          />
+          </div>
+
           {user.role === "admin" && (
             <Controller
               name="Product_status"
@@ -352,9 +377,8 @@ const ProductDialog = ({ open, setOpen }) => {
                 type="number"
                 error={!!errors.Product_Available_Qty}
                 helperText={
-                  errors?.Product_Available_Qty?.message ||
-                  (selectedCategory &&
-                    `Min quantity: ${selectedCategory.category_min_quantity} Max quantity: ${selectedCategory.category_max_quantity}`)
+                  selectedCategory &&
+                  `Min quantity: ${selectedCategory.category_min_quantity} Max quantity: ${selectedCategory.category_max_quantity}`
                 }
                 variant="outlined"
                 disabled={!selectedCategory}
@@ -368,7 +392,9 @@ const ProductDialog = ({ open, setOpen }) => {
               loading={isLoading}
               variant="contained"
               color="secondary"
-              disabled={_.isEmpty(dirtyFields) || !isValid}
+              disabled={
+                _.isEmpty(dirtyFields) || !isValid || !_.isEmpty(errors)
+              }
               type="submit"
             >
               Save
