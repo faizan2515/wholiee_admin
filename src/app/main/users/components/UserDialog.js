@@ -33,7 +33,7 @@ const schema = yup.object().shape({
     .required("You must enter an email"),
   name: yup.string().required("You must enter a name"),
   role: yup.string().required("You must select a role"),
-  status: yup.string().required("You must select a role"),
+  status: yup.string().required("You must select a status"),
 });
 
 const defaultValues = {
@@ -152,7 +152,6 @@ const UserDialog = ({ open, setOpen }) => {
                 <Select {...field} label="Status">
                   <MenuItem value="Pending">Pending</MenuItem>
                   <MenuItem value="Approved">Approved</MenuItem>
-                  <MenuItem value="Rejected">Rejected</MenuItem>
                 </Select>
               </FormControl>
             )}

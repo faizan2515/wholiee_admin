@@ -16,7 +16,6 @@ import {
 import { addUser, getUsers, selectUsers, setUser } from "../store/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingButton } from "@mui/lab";
-import { useEffect } from "react";
 
 /**
  * Form Validation Schema

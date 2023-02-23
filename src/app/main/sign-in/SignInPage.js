@@ -40,11 +40,11 @@ function SignInPage() {
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {
-      setValue("email", "sufiyankhanzada1232@gmail.com", {
+      setValue("email", "root@root.com", {
         shouldDirty: true,
         shouldValidate: true,
       });
-      setValue("password", "123456789", {
+      setValue("password", "12345678", {
         shouldDirty: true,
         shouldValidate: true,
       });

@@ -22,6 +22,13 @@ const navigationConfig = [
     url: "users",
     auth: authRoles.admin,
   },
+  {
+    id: "stock-management",
+    title: "Stock Management",
+    type: "item",
+    url: "stock-management",
+    auth: authRoles.wholeseller,
+  },
 ];
 
 export default navigationConfig;
