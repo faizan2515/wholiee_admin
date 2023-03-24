@@ -8,6 +8,7 @@ import Error404Page from "../main/404/Error404Page";
 import CategoriesConfig from "../main/categories/CategoriesConfig";
 import ProductsConfig from "../main/products/ProductsConfig";
 import StockManagementConfig from "../main/stock-management/StockManagementConfig";
+import OrdersConfig from "../main/orders/OrdersConfig";
 import UsersConfig from "../main/users/UsersConfig";
 import ForgotPasswordConfig from "../main/forgot-password/ForgotPasswordConfig";
 
@@ -15,6 +16,7 @@ const routeConfigs = [
   CategoriesConfig,
   ProductsConfig,
   StockManagementConfig,
+  OrdersConfig,
   UsersConfig,
   SignOutConfig,
   SignInConfig,

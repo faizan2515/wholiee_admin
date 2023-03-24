@@ -174,7 +174,7 @@ const ProductDialog = ({ open, setOpen }) => {
     <Dialog open={open}>
       <Paper className="p-24 w-full max-w-320 sm:w-320 mx-auto sm:mx-0">
         <Typography className="text-4xl font-extrabold tracking-tight leading-tight">
-          Add Product
+          {product ? "Update" : "Add"} Product
         </Typography>
 
         <form
