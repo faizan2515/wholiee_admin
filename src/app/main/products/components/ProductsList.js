@@ -44,6 +44,9 @@ const ProductsList = () => {
             <thead className="uppercase bg-gray-50">
               <tr>
                 <th scope="col" className="px-24 py-16">
+                  id
+                </th>
+                <th scope="col" className="px-24 py-16">
                   name
                 </th>
                 <th scope="col" className="px-24 py-16">
@@ -75,6 +78,7 @@ const ProductsList = () => {
             <tbody>
               {products.map((product) => (
                 <tr className="bg-white border-b" key={product.id}>
+                  <td className="px-24 py-20">{product.id}</td>
                   <td className="px-24 py-20">{product.Product_name}</td>
                   <td className="px-24 py-20">{product.Product_Description}</td>
                   <td className="px-24 py-20">{product.Product_Category}</td>
