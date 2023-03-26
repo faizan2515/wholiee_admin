@@ -42,21 +42,6 @@ const Orders = () => {
               Orders
             </Typography>
           </div>
-          {role === "admin" && (
-            <div className="flex items-center sm:mt-0 sm:mx-8 space-x-12">
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                onClick={() => setOpen(true)}
-                startIcon={
-                  <FuseSvgIcon size={20}>heroicons-solid:plus</FuseSvgIcon>
-                }
-              >
-                Add
-              </Button>
-            </div>
-          )}
         </div>
         <OrdersList />
       </div>

@@ -267,23 +267,6 @@ const OrderDialog = ({ open, setOpen }) => {
               />
             )}
           />
-          <Controller
-            name="Total"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                className="mb-24"
-                label="Total"
-                type="number"
-                error={!!errors.Total}
-                helperText={errors?.Total?.message}
-                variant="outlined"
-                required
-                fullWidth
-              />
-            )}
-          />
           <div className="flex justify-end gap-10">
             <LoadingButton
               loading={isLoading}
