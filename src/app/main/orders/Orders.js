@@ -3,20 +3,30 @@ import { Button, Typography } from "@mui/material";
 import withReducer from "app/store/withReducer";
 import reducer from "./store";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders, selectOrders } from "./store/ordersSlice";
+import {
+  getOrders,
+  getSupplierOrders,
+  selectOrders,
+} from "./store/ordersSlice";
 import { useEffect, useState } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import OrdersList from "./components/OrdersList";
 import OrderDialog from "./components/OrderDialog";
+import { selectUser } from "app/store/userSlice";
 
 const Orders = () => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector(selectOrders);
   const [open, setOpen] = useState(false);
+  const { role, data } = useSelector(selectUser);
 
   useEffect(() => {
-    dispatch(getOrders());
+    if (role === "admin") {
+      dispatch(getOrders());
+    } else {
+      dispatch(getSupplierOrders(data.id));
+    }
   }, [dispatch]);
 
   if (isLoading) {
@@ -32,19 +42,21 @@ const Orders = () => {
               Orders
             </Typography>
           </div>
-          <div className="flex items-center sm:mt-0 sm:mx-8 space-x-12">
-            <Button
-              className="whitespace-nowrap"
-              variant="contained"
-              color="secondary"
-              onClick={() => setOpen(true)}
-              startIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:plus</FuseSvgIcon>
-              }
-            >
-              Add
-            </Button>
-          </div>
+          {role === "admin" && (
+            <div className="flex items-center sm:mt-0 sm:mx-8 space-x-12">
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                onClick={() => setOpen(true)}
+                startIcon={
+                  <FuseSvgIcon size={20}>heroicons-solid:plus</FuseSvgIcon>
+                }
+              >
+                Add
+              </Button>
+            </div>
+          )}
         </div>
         <OrdersList />
       </div>

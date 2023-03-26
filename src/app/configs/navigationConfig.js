@@ -34,7 +34,7 @@ const navigationConfig = [
     title: "Orders",
     type: "item",
     url: "orders",
-    auth: authRoles.admin,
+    auth: authRoles.wholeseller,
   },
 ];
 

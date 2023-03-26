@@ -6,6 +6,14 @@ export const getOrders = createAsyncThunk("orders/getOrders", async () => {
   return response;
 });
 
+export const getSupplierOrders = createAsyncThunk(
+  "orders/getSupplierOrders",
+  async (id) => {
+    const response = await axios.post(`api/get_supp_orders/${id}`);
+    return response;
+  }
+);
+
 export const addOrder = createAsyncThunk("orders/addOrder", async (data) => {
   const response = await axios.post(
     `api/addorder?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}`
@@ -17,7 +25,7 @@ export const updateOrder = createAsyncThunk(
   "orders/updateOrder",
   async (data) => {
     const response = await axios.post(
-      `api/update-order/${data.id}?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}`
+      `api/update-order/${data.id}?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}&user_ids[]=${data.user_ids}&status=${data.status}`
     );
     return response;
   }
@@ -54,6 +62,19 @@ const ordersSlice = createSlice({
       state.isLoading = false;
     },
     [getOrders.fulfilled]: (state, action) => {
+      if (action.payload.status === 200) {
+        state.orders = action.payload.data.data;
+      }
+      state.isLoading = false;
+    },
+    [getSupplierOrders.pending]: (state, action) => {
+      state.isLoading = true;
+    },
+    [getSupplierOrders.rejected]: (state, action) => {
+      state.orders = [];
+      state.isLoading = false;
+    },
+    [getSupplierOrders.fulfilled]: (state, action) => {
       if (action.payload.status === 200) {
         state.orders = action.payload.data.data;
       }

@@ -2,12 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteOrder,
   getOrders,
+  getSupplierOrders,
   selectOrders,
   setOrder,
+  updateOrder,
 } from "../store/ordersSlice";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useState } from "react";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { selectUser } from "app/store/userSlice";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+
+const orderStatus = ["Pending", "Accepted", "Rejected", "Completed"];
 
 const OrdersList = () => {
   const dispatch = useDispatch();
@@ -16,10 +22,22 @@ const OrdersList = () => {
     id: null,
   });
   const { orders } = useSelector(selectOrders);
+  const { role, data } = useSelector(selectUser);
 
   const handleDelete = (id) => {
     dispatch(deleteOrder(id)).then(() => {
       dispatch(getOrders());
+    });
+  };
+
+  const handleStatusChange = (e, order) => {
+    const updateOrderStatus = { ...order, status: e.target.value };
+    dispatch(updateOrder(updateOrderStatus)).then(() => {
+      if (role === "admin") {
+        dispatch(getOrders());
+      } else {
+        dispatch(getSupplierOrders(data.id));
+      }
     });
   };
 
@@ -66,8 +84,13 @@ const OrdersList = () => {
               </th>
 
               <th scope="col" className="px-24 py-16">
-                Action
+                status
               </th>
+              {role === "admin" && (
+                <th scope="col" className="px-24 py-16">
+                  Action
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -83,22 +106,39 @@ const OrdersList = () => {
                 <td className="px-24 py-20">{order.Zipcode}</td>
                 <td className="px-24 py-20">{order.Product_ids}</td>
                 <td className="px-24 py-20">{order.Total}</td>
-                <td className="px-24 py-20 flex gap-10">
-                  <FuseSvgIcon
-                    size={20}
-                    onClick={() => dispatch(setOrder(order))}
-                    className="hover:text-blue cursor-pointer"
-                  >
-                    heroicons-solid:pencil-alt
-                  </FuseSvgIcon>
-                  <FuseSvgIcon
-                    size={20}
-                    onClick={() => setOpen({ isOpen: true, id: order.id })}
-                    className="hover:text-red cursor-pointer"
-                  >
-                    heroicons-solid:trash
-                  </FuseSvgIcon>
+                <td className="px-24 py-20">
+                  <FormControl sx={{ m: 1, minWidth: 120 }}>
+                    <Select
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(e, order)}
+                      displayEmpty
+                    >
+                      {orderStatus.map((status) => (
+                        <MenuItem value={status} key={status}>
+                          {status}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </td>
+                {role === "admin" && (
+                  <td className="px-24 py-20 flex gap-10">
+                    <FuseSvgIcon
+                      size={20}
+                      onClick={() => dispatch(setOrder(order))}
+                      className="hover:text-blue cursor-pointer"
+                    >
+                      heroicons-solid:pencil-alt
+                    </FuseSvgIcon>
+                    <FuseSvgIcon
+                      size={20}
+                      onClick={() => setOpen({ isOpen: true, id: order.id })}
+                      className="hover:text-red cursor-pointer"
+                    >
+                      heroicons-solid:trash
+                    </FuseSvgIcon>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

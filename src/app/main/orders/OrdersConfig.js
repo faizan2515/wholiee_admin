@@ -9,7 +9,7 @@ const OrdersConfig = {
       config: {},
     },
   },
-  auth: authRoles.admin,
+  auth: authRoles.wholeseller,
   routes: [
     {
       path: "orders",
