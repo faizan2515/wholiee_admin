@@ -111,19 +111,23 @@ const OrdersList = () => {
                 <td className="px-24 py-20">{order.quantity}</td>
                 <td className="px-24 py-20">{order.Total}</td>
                 <td className="px-24 py-20">
-                  <FormControl sx={{ m: 1, minWidth: 120 }}>
-                    <Select
-                      value={order.status}
-                      onChange={(e) => handleStatusChange(e, order)}
-                      displayEmpty
-                    >
-                      {orderStatus.map((status) => (
-                        <MenuItem value={status} key={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  {role === "wholeseller" ? (
+                    <FormControl sx={{ m: 1, minWidth: 120 }}>
+                      <Select
+                        value={order.status}
+                        onChange={(e) => handleStatusChange(e, order)}
+                        displayEmpty
+                      >
+                        {orderStatus.map((status) => (
+                          <MenuItem value={status} key={status}>
+                            {status}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    order.status
+                  )}
                 </td>
                 {role === "admin" && (
                   <td className="px-24 py-20 flex gap-10">
