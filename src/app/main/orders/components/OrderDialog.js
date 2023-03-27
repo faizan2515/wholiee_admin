@@ -47,6 +47,9 @@ const defaultValues = {
   Zipcode: "",
   Product_ids: "",
   Total: "",
+  user_ids: "",
+  status: "Pending",
+  quantity: "",
 };
 
 const OrderDialog = ({ open, setOpen }) => {
@@ -71,6 +74,9 @@ const OrderDialog = ({ open, setOpen }) => {
         Zipcode: order.Zipcode,
         Product_ids: order.Product_ids,
         Total: order.Total,
+        user_ids: order.user_ids,
+        status: order.status,
+        quantity: order.quantity,
       });
       setOpen(true);
     }
@@ -261,6 +267,23 @@ const OrderDialog = ({ open, setOpen }) => {
                 type="text"
                 error={!!errors.Product_ids}
                 helperText={errors?.Product_ids?.message}
+                variant="outlined"
+                required
+                fullWidth
+              />
+            )}
+          />
+          <Controller
+            name="quantity"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="mb-24"
+                label="Product quantities"
+                type="text"
+                error={!!errors.quantity}
+                helperText={errors?.quantity?.message}
                 variant="outlined"
                 required
                 fullWidth

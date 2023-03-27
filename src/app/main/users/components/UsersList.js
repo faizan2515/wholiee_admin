@@ -89,13 +89,13 @@ const ProductsList = () => {
                     >
                       heroicons-solid:pencil-alt
                     </FuseSvgIcon>
-                    <FuseSvgIcon
+                    {/* <FuseSvgIcon
                       size={20}
                       onClick={() => setOpen({ isOpen: true, id: user.id })}
                       className="hover:text-red cursor-pointer"
                     >
                       heroicons-solid:trash
-                    </FuseSvgIcon>
+                    </FuseSvgIcon> */}
                   </td>
                 )}
               </tr>

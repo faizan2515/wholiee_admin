@@ -16,7 +16,7 @@ export const getSupplierOrders = createAsyncThunk(
 
 export const addOrder = createAsyncThunk("orders/addOrder", async (data) => {
   const response = await axios.post(
-    `api/addorder?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}`
+    `api/addorder?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}&user_ids[]=${data.user_ids}&status=${data.status}&quantity=${data.quantity}`
   );
   return response;
 });
@@ -25,7 +25,7 @@ export const updateOrder = createAsyncThunk(
   "orders/updateOrder",
   async (data) => {
     const response = await axios.post(
-      `api/update-order/${data.id}?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}&user_ids[]=${data.user_ids}&status=${data.status}`
+      `api/update-order/${data.id}?First_name=${data.First_name}&Last_name=${data.Last_name}&Email=${data.Email}&Country=${data.Country}&City=${data.City}&State=${data.State}&Address=${data.Address}&Zipcode=${data.Zipcode}&Product_ids[]=${data.Product_ids}&Total=${data.Total}&user_ids[]=${data.user_ids}&status=${data.status}&quantity=${data.quantity}`
     );
     return response;
   }

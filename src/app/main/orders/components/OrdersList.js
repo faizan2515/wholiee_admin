@@ -80,6 +80,9 @@ const OrdersList = () => {
                 product ids
               </th>
               <th scope="col" className="px-24 py-16">
+                product quantities
+              </th>
+              <th scope="col" className="px-24 py-16">
                 total
               </th>
 
@@ -105,6 +108,7 @@ const OrdersList = () => {
                 <td className="px-24 py-20">{order.Address}</td>
                 <td className="px-24 py-20">{order.Zipcode}</td>
                 <td className="px-24 py-20">{order.Product_ids}</td>
+                <td className="px-24 py-20">{order.quantity}</td>
                 <td className="px-24 py-20">{order.Total}</td>
                 <td className="px-24 py-20">
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
