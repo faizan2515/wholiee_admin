@@ -36,15 +36,17 @@ export const addProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async (data) => {
-    const response = await axios.post(`api/${data.id}/update-pro`, {
-      Product_name: data.Product_name,
-      Product_Category: data.Product_Category,
-      Product_Description: data.Product_Description,
-      Product_Per_Price: data.Product_Per_Price,
-      Product_Available_Qty: data.Product_Available_Qty,
-      Product_Status: data.Product_status,
-      user_id: data.user_id,
-    });
+    const response = await axios.post(
+      `api/${data.id}/update-pro`,
+      {
+        ...data,
+      },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response;
   }
 );

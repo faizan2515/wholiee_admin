@@ -45,7 +45,7 @@ const defaultValues = {
   Product_Image: "",
   Product_Per_Price: 0,
   Product_Available_Qty: 0,
-  Product_status: "Pending",
+  Product_Status: "Pending",
 };
 
 const ProductDialog = ({ open, setOpen }) => {
@@ -75,7 +75,7 @@ const ProductDialog = ({ open, setOpen }) => {
         if (!value || typeof value === "string") return true;
         return value && SUPPORTED_FORMATS.includes(value.type);
       }),
-    Product_status: yup.string(),
+    Product_Status: yup.string(),
   });
 
   const {
@@ -114,7 +114,7 @@ const ProductDialog = ({ open, setOpen }) => {
         Product_Image: product.Product_Image,
         Product_Per_Price: parseInt(product.Product_Per_Price),
         Product_Available_Qty: parseInt(product.Product_Available_Qty),
-        Product_status: product.Product_status,
+        Product_Status: product.Product_status,
       });
       setOpen(true);
     }
@@ -139,7 +139,6 @@ const ProductDialog = ({ open, setOpen }) => {
     data.user_id = user.data.id;
     if (product) {
       data.id = product.id;
-      delete data.Product_Image;
       dispatch(updateProduct(data)).then(() => {
         handleClose();
         if (user.role === "admin") {
@@ -279,7 +278,7 @@ const ProductDialog = ({ open, setOpen }) => {
 
           {user.role === "admin" && (
             <Controller
-              name="Product_status"
+              name="Product_Status"
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth className="mb-24">
